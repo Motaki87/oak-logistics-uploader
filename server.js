@@ -1,17 +1,16 @@
-require('dotenv').config();
 const express = require('express');
-const multer = require('multer');
-const cors = require('cors');
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
+const cors = require('cors');
+require('dotenv').config();
+const multer = require('multer');
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// 🆕 NEW ENDPOINT TO ADD
+// ✅ Define this FIRST — before static middleware
 app.get('/uploads/index.json', (req, res) => {
   const baseDir = path.join(__dirname, 'uploads');
   const index = {};
@@ -28,10 +27,3 @@ app.get('/uploads/index.json', (req, res) => {
     });
 
     res.json(index);
-  });
-});
-
-// 🔚 Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
