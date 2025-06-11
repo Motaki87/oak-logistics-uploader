@@ -1,16 +1,16 @@
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const cors = require('cors');
 require('dotenv').config();
+const express = require('express');
 const multer = require('multer');
+const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 
-// ✅ Define this FIRST — before static middleware
+// ✅ IMPORTANT: Add the route BEFORE static
 app.get('/uploads/index.json', (req, res) => {
   const baseDir = path.join(__dirname, 'uploads');
   const index = {};
@@ -27,3 +27,12 @@ app.get('/uploads/index.json', (req, res) => {
     });
 
     res.json(index);
+  });
+});
+
+// ✅ Static comes after
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
