@@ -72,18 +72,24 @@
   <main>
     <h2>Trip Sheet Upload & POD</h2>
     <p><strong>Load Number:</strong> <span id="jobInfo"></span></p>
-    <form id="uploadForm">
+    
+    <!-- ✅ Fixed: form method and enctype -->
+    <form id="uploadForm" method="POST" enctype="multipart/form-data">
       <label for="comment">Driver Comments:</label>
-      <textarea id="comment" name="comment" rows="5" required></textarea>
+      <textarea id="comment" name="comments" rows="5" required></textarea>
 
       <label for="photos">Upload Photos (Max 10MB each):</label>
       <input type="file" id="photos" name="photos" multiple accept="image/*" required />
 
-      <input type="hidden" id="loadNumber" name="loadNumber" />
+      <input type="hidden" id="loadNumber" name="load" />
       <button type="submit">Submit</button>
     </form>
-    <div id="confirmation" class="confirmation" style="display:none;">Your form has been submitted. Thank you.</div>
+
+    <div id="confirmation" class="confirmation" style="display:none;">
+      Your form has been submitted. Thank you.
+    </div>
   </main>
+
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const loadNumber = urlParams.get('load') || 'Unknown';
@@ -94,7 +100,8 @@
     document.getElementById('uploadForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      const formData = new FormData(this);
+      const form = document.getElementById('uploadForm');
+      const formData = new FormData(form);
 
       const response = await fetch('/upload', {
         method: 'POST',
@@ -102,7 +109,7 @@
       });
 
       if (response.ok) {
-        document.getElementById('uploadForm').style.display = 'none';
+        form.style.display = 'none';
         document.getElementById('confirmation').style.display = 'block';
       } else {
         alert('Upload failed. Please try again.');
