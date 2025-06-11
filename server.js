@@ -11,6 +11,27 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 🆕 NEW ENDPOINT TO ADD
+app.get('/uploads/index.json', (req, res) => {
+  const baseDir = path.join(__dirname, 'uploads');
+  const index = {};
+
+  fs.readdir(baseDir, (err, folders) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    folders.forEach(folder => {
+      const folderPath = path.join(baseDir, folder);
+      if (fs.lstatSync(folderPath).isDirectory()) {
+        const files = fs.readdirSync(folderPath).map(file => `uploads/${folder}/${file}`);
+        index[folder] = files;
+      }
+    });
+
+    res.json(index);
+  });
+});
+
+// 🔚 Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
